@@ -1,4 +1,4 @@
-== Pastegrep
+## Pastegrep ##
 
 This project was created of an evening with the intent to make it easy to watch
 pastebin for a given keyword and cache the result.  It's written in python and
