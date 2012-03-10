@@ -7,8 +7,25 @@ from os import mkdir
 from os.path import isdir, exists
 outdir = 'pastes'
 
+def save_paste(identifier, data):
+    fname = "{}/paste_{}.txt".format(outdir, identifier)
+    with open(fname, 'w') as out:
+        out.write(data)
+    print "Saved {}".format(fname)
+
+def pastegrep(expression, cb=save_paste, interval=20, endpoint='http://pastebin.com/ajax/realtime_data.php'):
+    """Loops endlessly and grabs the index of recent pastes from pastebin.
+    Whenever a new paste is discovered, it is fetched and evaluated against
+    `expression`.  If `expression` is found inside the paste, the callback `cb`
+    is called with the paste identifier and body data.  The `interval` is a
+    time in seconds, and the endpoint is a pastebin.com URL with a listing
+    recent pastes to scrape."""
+    while True:
+        fetch(expression, endpoint)
+        sleep(interval)
+
 seen = set()
-def fetch(expression, url='http://pastebin.com/ajax/realtime_data.php'):
+def fetch(expression, url):
     if not isdir(outdir) and not exists(outdir):
         mkdir(outdir)
 
@@ -22,12 +39,6 @@ def fetch(expression, url='http://pastebin.com/ajax/realtime_data.php'):
                     handle_paste(identifier, expression)
                     seen.add(identifier)
 
-def save_paste(identifier, data):
-    fname = "{}/paste_{}.txt".format(outdir, identifier)
-    with open(fname, 'w') as out:
-        out.write(data)
-    print "Saved {}".format(fname)
-
 def handle_paste(identifier, expression, save_func=save_paste):
     url = "http://pastebin.com/raw.php?i={}".format(identifier)
     try:
@@ -40,12 +51,8 @@ def handle_paste(identifier, expression, save_func=save_paste):
 
 if __name__ == "__main__":
     from sys import argv
-    if len(argv) <= 1:
-        expression = 'password'
-    else:
-        expression = argv[1]
+    if len(argv) <= 1: expression = 'password'
+    else: expression = argv[1]
 
     print "Fetching all pastes that match the regular expression '{}'".format(expression)
-    while True:
-        fetch(expression)
-        sleep(20)
+    pastegrep(expression)
