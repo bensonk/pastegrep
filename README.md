@@ -6,3 +6,8 @@ designed to be easily used as a module.  With very little work you should be
 able to import a function from pastegrep, pass it an expression you want to
 watch for, and optionally give it a function to call whenever it finds a paste
 that matches your regular expression. 
+
+Examples:
+
+    ./pastegrep.py password
+    ./pastegrep.py @gmail.com @yahoo.com anon password

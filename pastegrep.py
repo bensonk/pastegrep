@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from time import sleep
-from urllib import urlencode
 from urllib2 import urlopen
 from re import search, I, M
 from os import mkdir
@@ -52,7 +51,7 @@ def handle_paste(identifier, expression, save_func=save_paste):
 if __name__ == "__main__":
     from sys import argv
     if len(argv) <= 1: expression = 'password'
-    else: expression = argv[1]
+    else: expression = '|'.join(('({0})'.format(p) for p in argv[1:]))
 
     print "Fetching all pastes that match the regular expression '{0}'".format(expression)
     pastegrep(expression)
